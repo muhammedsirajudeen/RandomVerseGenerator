@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import axios from "axios"
 import axiosRetry from "axios-retry"
 const argInjector = (ayah: number, language: language) => {
