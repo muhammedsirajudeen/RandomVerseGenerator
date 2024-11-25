@@ -10,7 +10,8 @@ type language = "en.asad" | "ar"
 axiosRetry(axiosInstance, { retries: 10, retryDelay: axiosRetry.exponentialDelay });
 
 export async function GET(): Promise<NextResponse> {
-    const jsonData = await axiosInstance.get(argInjector(Math.floor(Math.random() * 6236) + 1, "en.asad"))
-    const arabicjsonData = await axiosInstance.get(argInjector(Math.floor(Math.random() * 6236) + 1, "ar"))
+    const randomNumber=Math.floor(Math.random() * 6236) + 1
+    const jsonData = await axiosInstance.get(argInjector(randomNumber, "en.asad"))
+    const arabicjsonData = await axiosInstance.get(argInjector(randomNumber, "ar"))
     return NextResponse.json({ englishresponse: jsonData.data, arabicresponse: arabicjsonData.data })
 }
