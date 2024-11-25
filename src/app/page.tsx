@@ -2,25 +2,24 @@
 import { motion } from "motion/react"
 import DrawerComponent from "@/components/drawer-component"
 import { useState } from "react"
-
-
+import { axiosInstance } from "@/helper/axiosInstance"
 interface responseText {
   data: {
     text: string
   }
 }
-interface supersededResponse{
-  englishresponse:responseText,
-  arabicresponse:responseText
+interface supersededResponse {
+  englishresponse: responseText,
+  arabicresponse: responseText
 }
-import { axiosInstance } from "./api/verse/route"
+
 export default function Home() {
   const [englishVerse, setEnglishVerse] = useState<string>("")
   const [arabicVerse, setArabicVerse] = useState<string>("")
   const [visible, setVisible] = useState<boolean>(false)
   const verseHandler = async () => {
     setVisible(false)
-    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${Math.floor(Math.random()*6236)+1}`)).data
+    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${Math.floor(Math.random() * 6236) + 1}`)).data
     console.log(jsonData)
     setEnglishVerse(jsonData.englishresponse.data.text)
     setArabicVerse(jsonData.arabicresponse.data.text)
