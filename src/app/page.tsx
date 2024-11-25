@@ -1,39 +1,34 @@
 "use client"
-// import Image from "next/image";
 import { motion } from "motion/react"
 import DrawerComponent from "@/components/drawer-component"
 import { useState } from "react"
 
-type language = "en.asad" | "ar"
 
 interface responseText {
   data: {
     text: string
   }
 }
-
+interface supersededResponse{
+  englishresponse:responseText,
+  arabicresponse:responseText
+}
+import { axiosInstance } from "./api/verse/route"
 export default function Home() {
   const [englishVerse, setEnglishVerse] = useState<string>("")
   const [arabicVerse, setArabicVerse] = useState<string>("")
   const [visible, setVisible] = useState<boolean>(false)
   const verseHandler = async () => {
     setVisible(false)
-    const rawData = await fetch(argInjector(Math.floor(Math.random() * 6236) + 1, "en.asad"))
-    const jsonData: responseText = await rawData.json()
-    console.log(jsonData.data.text)
-    setEnglishVerse(jsonData.data.text)
-    const arabicRawData = await fetch(argInjector(Math.floor(Math.random() * 6236) + 1, "ar"))
-    const arabicjsonData: responseText = await arabicRawData.json()
-    setArabicVerse(arabicjsonData.data.text)
+    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${Math.floor(Math.random()*6236)+1}`)).data
+    console.log(jsonData)
+    setEnglishVerse(jsonData.englishresponse.data.text)
+    setArabicVerse(jsonData.arabicresponse.data.text)
     setVisible(true)
   }
 
-  const argInjector = (ayah: number, language: language) => {
-    return `http://api.alquran.cloud/v1/ayah/${ayah}/${language}`
-  }
 
   return (
-    // <></>
     <div className="flex w-screen items-center mt-72 justify-center flex-col">
       <motion.h1
         initial={{ scale: 0 }}
