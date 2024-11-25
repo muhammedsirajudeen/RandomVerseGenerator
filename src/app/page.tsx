@@ -19,7 +19,13 @@ export default function Home() {
   const [visible, setVisible] = useState<boolean>(false)
   const verseHandler = async () => {
     setVisible(false)
-    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${Math.floor(Math.random() * 6236) + 1}`)).data
+    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${Math.floor(Math.random() * 6236) + 1}`, {
+      headers: {
+        'Cache-Control': 'no-store',  // Prevents caching of the response
+        'Pragma': 'no-cache',         // For HTTP/1.0 compatibility
+        'Expires': '0',               // Set expiry to the past
+      }
+    })).data;
     console.log(jsonData)
     setEnglishVerse(jsonData.englishresponse.data.text)
     setArabicVerse(jsonData.arabicresponse.data.text)
