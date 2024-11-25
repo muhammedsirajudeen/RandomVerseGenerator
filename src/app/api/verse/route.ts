@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { axiosInstance } from "@/helper/axiosInstance";
 import axiosRetry from "axios-retry"
 const argInjector = (ayah: number, language: language) => {
-    return `http://api.alquran.cloud/v1/ayah/${ayah}/${language}`
+    return `http://api.alquran.cloud/v1/ayah/${ayah}/${language}?t=${new Date().getTime()}`;
 }
 type language = "en.asad" | "ar"
 
