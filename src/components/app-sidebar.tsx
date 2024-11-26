@@ -18,11 +18,11 @@ const items = [
     url: "/",
     icon: Home,
   },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
+  // {
+  //   title: "Inbox",
+  //   url: "#",
+  //   icon: Inbox,
+  // },
   {
     title: "History",
     url: "/history",
