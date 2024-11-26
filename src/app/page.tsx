@@ -10,16 +10,21 @@ interface responseText {
 }
 interface supersededResponse {
   englishresponse: responseText,
-  arabicresponse: responseText
+  arabicresponse: responseText,
+  audioresponse: string
 }
 
 export default function Home() {
   const [englishVerse, setEnglishVerse] = useState<string>("")
   const [arabicVerse, setArabicVerse] = useState<string>("")
+  const [audioUrl,setAudioUrl]=useState<string>("")
+  const [verse,setVerse]=useState<number>(0)
   const [visible, setVisible] = useState<boolean>(false)
   const verseHandler = async () => {
     setVisible(false)
-    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${Math.floor(Math.random() * 6236) + 1}`, {
+    const randomNumber=Math.floor(Math.random() * 6236) + 1
+    setVerse(randomNumber)
+    const jsonData: supersededResponse = (await axiosInstance.get(`api/verse?verse=${randomNumber}`, {
       headers: {
         'Cache-Control': 'no-store',  // Prevents caching of the response
         'Pragma': 'no-cache',         // For HTTP/1.0 compatibility
@@ -29,6 +34,7 @@ export default function Home() {
     console.log(jsonData)
     setEnglishVerse(jsonData.englishresponse.data.text)
     setArabicVerse(jsonData.arabicresponse.data.text)
+    setAudioUrl(jsonData.audioresponse)
     setVisible(true)
   }
 
@@ -58,7 +64,7 @@ export default function Home() {
           transition: { duration: 0.2 }
         }}
       >
-        <DrawerComponent arabicverse={arabicVerse} visible={visible} verse={englishVerse} verseHandler={verseHandler} />
+        <DrawerComponent audioUrl={audioUrl} verseNumber={verse} arabicverse={arabicVerse} visible={visible} verse={englishVerse} verseHandler={verseHandler} />
       </motion.div>
     </div>
   );

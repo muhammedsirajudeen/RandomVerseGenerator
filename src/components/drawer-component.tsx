@@ -10,23 +10,44 @@ import {
 } from "@/components/ui/drawer"
 import ClipLoader from "react-spinners/ClipLoader";
 import { toast } from "sonner"
-
+import { SpeakerWaveIcon } from "@heroicons/react/24/outline";
 import { Button } from "./ui/button"
 import { motion } from "motion/react"
 import { v4 as uuidv4 } from 'uuid'; // Importing UUIDv4 generator
+import { responseType } from "@/helper/verseHelper";
+import { useRef } from "react";
 
-const DrawerComponent = ({ verseHandler, verse, visible, arabicverse }: { verseHandler: VoidFunction, verse: string, visible: boolean, arabicverse: string }) => {
+const DrawerComponent = ({ verseHandler, verse, visible, arabicverse, verseNumber, audioUrl }: { verseHandler: VoidFunction, verse: string, visible: boolean, arabicverse: string, verseNumber: number, audioUrl: string }) => {
+    const audioRef=useRef<HTMLAudioElement>(null)
     const saveHandler = () => {
-        const currentVerses=JSON.parse(window.localStorage.getItem('verses') as string) as Array<{englishverse:string,arabicverse:string,date:Date,id:string}>  ?? []
-        currentVerses.push({englishverse:verse,arabicverse:arabicverse,date:new Date(),id:uuidv4()})
-        window.localStorage.setItem('verses',JSON.stringify(currentVerses)) 
+        const currentVerses = JSON.parse(window.localStorage.getItem('verses') as string) as Array<responseType> ?? []
+        currentVerses.push({ englishverse: verse, arabicverse: arabicverse, date: new Date(), id: uuidv4() })
+        window.localStorage.setItem('verses', JSON.stringify(currentVerses))
         toast("Verse has been saved", {
             description: new Date().toDateString(),
             action: {
-              label: "Undo",
-              onClick: () => console.log("Undo"),
+                label: "Undo",
+                onClick: () => console.log("Undo"),
             },
-          })    }
+        })
+    }
+    const audioHandler = () => {
+        console.log(`Fetching audio from the server the verse id is ${verseNumber}`)
+        if(audioRef.current){
+
+            audioRef.current.src=audioUrl
+            audioRef.current.play()
+            toast("Preparing the audio please wait", {
+                description: new Date().toDateString(),
+                action: {
+                    label: "Stop",
+                    onClick: () => {
+                        if(audioRef.current) audioRef.current.pause()
+                    },
+                },
+            })
+        }
+    }
     return (
         <Drawer>
             <DrawerTrigger onClick={verseHandler} className="ubuntu-mono-bold bg-black text-white mt-10 p-2 rounded-lg">Generate</DrawerTrigger>
@@ -85,11 +106,17 @@ const DrawerComponent = ({ verseHandler, verse, visible, arabicverse }: { verseH
                             </p>
                         </DrawerClose>
                         <Button onClick={saveHandler} className="w-48" >Save</Button>
+                        <audio ref={audioRef} className="hidden" autoPlay={false}>
+                            <source  type="audio/mpeg" />
+                        </audio>
+                        <SpeakerWaveIcon onClick={audioHandler} className="h-6 w-6" />
                     </div>
                 </DrawerFooter>
+
             </DrawerContent>
         </Drawer>
 
     )
 }
 export default DrawerComponent
+
